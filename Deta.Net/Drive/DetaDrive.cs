@@ -5,18 +5,27 @@ namespace Deta.Net.Drive;
 
 public class DetaDrive
 {
-	private string driveName { get; init; }
-	private string? host { get; init; }
+	private const string DETA_DRIVE_URL = ":protocol://:host/:version/:project_id/:drive_name";
 
-	internal DetaDrive(string driveName, string? host)
+	private string baseUrl { get; init; }
+	private string apiKey { get; init; }
+
+	internal DetaDrive(string apiKey, string driveName)
 	{
 		if (string.IsNullOrWhiteSpace(driveName))
 		{
 			throw new InvalidOperationException("driveName must be set or not empty.");
 		}
 
-		this.driveName = driveName;
-		this.host = host;
+		// hardcode to https://drive.deta.sh/v1 for now
+		baseUrl = DETA_DRIVE_URL.Replace(":protocol", "https")
+			.Replace(":host", "drive.deta.sh")
+			.Replace(":version", "v1")
+			.Replace(":project_id", apiKey.Split('_')[0])
+			.Replace(":drive_name", driveName);
+		this.apiKey = apiKey;
+
+		// Console.WriteLine(baseUrl);
 	}
 
 	public async Task<string> PutAsync(object data, string? key, PutOptions? options)

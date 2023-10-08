@@ -5,18 +5,27 @@ namespace Deta.Net.Base;
 
 public class DetaBase
 {
-	private string baseName { get; init; }
-	private string? host { get; init; }
+	private const string DETA_BASE_URL = ":protocol://:host/:version/:project_id/:base_name";
 
-	internal DetaBase(string baseName, string? host)
+	private string baseUrl { get; init; }
+	private string apiKey { get; init; }
+
+	internal DetaBase(string apiKey, string baseName)
 	{
 		if (string.IsNullOrWhiteSpace(baseName))
 		{
 			throw new InvalidOperationException("baseName must be set or not empty.");
 		}
 
-		this.baseName = baseName;
-		this.host = host;
+		// hardcode to https://database.deta.sh/v1 for now
+		baseUrl = DETA_BASE_URL.Replace(":protocol", "https")
+			.Replace(":host", "database.deta.sh")
+			.Replace(":version", "v1")
+			.Replace(":project_id", apiKey.Split('_')[0])
+			.Replace(":base_name", baseName);
+		this.apiKey = apiKey;
+
+		// Console.WriteLine(baseUrl);
 	}
 
 	public async Task<object?> PutAsync(object data, string key, PutOptions? options)
