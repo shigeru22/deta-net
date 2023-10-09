@@ -6,26 +6,25 @@ using Deta.Net.Drive;
 
 namespace Deta.Net.Tests;
 
+[TestCaseOrderer("Deta.Net.Tests.TestPriorityAttribute", "Deta.Net.Tests")]
 public class InstanceTests
 {
 	[Fact]
+	[Priority(1)]
 	public void InstanceCreationTest()
 	{
-		Deta detaInstance;
-		try
+		if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DETA_PROJECT_KEY")))
 		{
-			detaInstance = new Deta();
-		}
-		catch (InvalidOperationException)
-		{
-			Console.WriteLine("DETA_PROJECT_KEY environment variable not set. Unable to test initialization without key.");
+			Console.WriteLine("Unable to test instance creation with environment variable. Skipping test.");
 			return;
 		}
 
+		Deta detaInstance = new Deta();
 		Assert.NotNull(detaInstance);
 	}
 
 	[Theory]
+	[Priority(2)]
 	[InlineData("")]
 	[InlineData("test_key")]
 	public void InstanceCreationTestWithKey(string projectKey)
@@ -45,6 +44,7 @@ public class InstanceTests
 	}
 
 	[Fact]
+	[Priority(3)]
 	public void BaseCreationTest()
 	{
 		Deta detaInstance = new Deta("test1_rndKey");
@@ -53,6 +53,7 @@ public class InstanceTests
 	}
 
 	[Fact]
+	[Priority(4)]
 	public void DriveCreationTest()
 	{
 		Deta detaInstance = new Deta("test1_rndKey");
