@@ -7,8 +7,8 @@ public class DetaDrive
 {
 	private const string DETA_DRIVE_URL = ":protocol://:host/:version/:project_id/:drive_name";
 
-	private string baseUrl { get; init; }
-	private string apiKey { get; init; }
+	private string baseUrl;
+	private string apiKey;
 
 	internal DetaDrive(string apiKey, string driveName)
 	{

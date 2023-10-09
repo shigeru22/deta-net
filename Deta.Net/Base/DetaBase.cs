@@ -1,14 +1,19 @@
 // Copyright (c) shigeru22. Licensed under the MIT license.
 // See LICENSE in the repository root for details.
 
+using System.Net;
+using System.Text;
+using System.Text.Json;
+using Deta.Net.Base.Generic;
+
 namespace Deta.Net.Base;
 
-public class DetaBase
+public partial class DetaBase
 {
-	private const string DETA_BASE_URL = ":protocol://:host/:version/:project_id/:base_name";
+	private const string HOST_URL = "https://database.deta.sh";
 
-	private string baseUrl { get; init; }
-	private string apiKey { get; init; }
+	private string baseEndpoint;
+	private HttpClient httpClient;
 
 	internal DetaBase(string apiKey, string baseName)
 	{
@@ -17,74 +22,205 @@ public class DetaBase
 			throw new InvalidOperationException("baseName must be set or not empty.");
 		}
 
-		// hardcode to https://database.deta.sh/v1 for now
-		baseUrl = DETA_BASE_URL.Replace(":protocol", "https")
-			.Replace(":host", "database.deta.sh")
-			.Replace(":version", "v1")
-			.Replace(":project_id", apiKey.Split('_')[0])
-			.Replace(":base_name", baseName);
-		this.apiKey = apiKey;
+		baseEndpoint = $"/v1/{apiKey.Split('_')[0]}/{baseName}";
 
 		// Console.WriteLine(baseUrl);
+
+		httpClient = new HttpClient()
+		{
+			BaseAddress = new Uri(HOST_URL),
+		};
+		httpClient.DefaultRequestHeaders.Add("X-API-Key", apiKey);
 	}
 
-	public async Task<object?> PutAsync(object data, string key, PutOptions? options)
+	public async Task<PutResponse> PutAsync(Dictionary<string, object>[] data)
 	{
-		throw new NotImplementedException();
+		string payload = JsonSerializer.Serialize(new PutItems<Dictionary<string, object>>(data));
+
+		using StringContent requestBody = new StringContent(payload, Encoding.UTF8, "application/json");
+		using HttpResponseMessage response = await httpClient.PutAsync($"{baseEndpoint}/items", requestBody);
+
+		string responseBody = await response.Content.ReadAsStringAsync();
+
+		if (response.StatusCode == HttpStatusCode.Unauthorized)
+		{
+			throw new HttpRequestException("Unauthorized key. Check API key used and try again.",
+				null,
+				response.StatusCode);
+		}
+		else if (response.StatusCode is not HttpStatusCode.OK and not HttpStatusCode.MultiStatus)
+		{
+			throw new HttpRequestException($"API returned status code {(int)response.StatusCode} ({response.StatusCode}){(!string.IsNullOrWhiteSpace(responseBody) ? $"\n{responseBody}" : string.Empty)}",
+				null,
+				response.StatusCode);
+		}
+
+		PutResponse? responseData = JsonSerializer.Deserialize<PutResponse>(responseBody)
+			?? throw new InvalidOperationException($"Response code is {(int)response.StatusCode} ({(response.StatusCode == HttpStatusCode.OK ? "OK" : "Multi-Status")}) but body is null.");
+
+		return responseData;
 	}
 
-	public async Task<T?> PutAsync<T>(T data, string? key, PutOptions? options)
+	public async Task<Dictionary<string, object>?> GetAsync(string key)
 	{
-		throw new NotImplementedException();
-	}
+		using HttpResponseMessage response = await httpClient.GetAsync($"{baseEndpoint}/items/{key}");
 
-	public async Task<object?> GetAsync(string key)
-	{
-		throw new NotImplementedException();
-	}
+		string responseBody = await response.Content.ReadAsStringAsync();
 
-	public async Task<T?> GetAsync<T>(string key)
-	{
-		throw new NotImplementedException();
+		if (response.StatusCode == HttpStatusCode.Unauthorized)
+		{
+			throw new HttpRequestException("Unauthorized key. Check API key used and try again.",
+				null,
+				response.StatusCode);
+		}
+		else if (response.StatusCode == HttpStatusCode.NotFound)
+		{
+			return default;
+		}
+		else if (response.StatusCode != HttpStatusCode.OK)
+		{
+			throw new HttpRequestException($"API returned status code {(int)response.StatusCode} ({response.StatusCode}){(!string.IsNullOrWhiteSpace(responseBody) ? $"\n{responseBody}" : string.Empty)}",
+				null,
+				response.StatusCode);
+		}
+
+		Dictionary<string, object>? item = JsonSerializer.Deserialize<Dictionary<string, object>>(responseBody);
+		return item;
 	}
 
 	public async Task DeleteAsync(string key)
 	{
-		throw new NotImplementedException();
+		using HttpResponseMessage response = await httpClient.DeleteAsync($"{baseEndpoint}/items/{key}");
+
+		string responseBody = await response.Content.ReadAsStringAsync();
+
+		if (response.StatusCode == HttpStatusCode.Unauthorized)
+		{
+			throw new HttpRequestException("Unauthorized key. Check API key used and try again.",
+				null,
+				response.StatusCode);
+		}
+		else if (response.StatusCode != HttpStatusCode.OK)
+		{
+			throw new HttpRequestException($"API returned status code {(int)response.StatusCode} ({response.StatusCode}){(!string.IsNullOrWhiteSpace(responseBody) ? $"\n{responseBody}" : string.Empty)}",
+				null,
+				response.StatusCode);
+		}
 	}
 
-	public async Task<object> InsertAsync(object data, string? key, PutOptions? options)
+	public async Task<string> InsertAsync(Dictionary<string, object> data)
 	{
-		throw new NotImplementedException();
+		string payload = JsonSerializer.Serialize(new InsertItemPayload<Dictionary<string, object>>(data));
+
+		using StringContent requestBody = new StringContent(payload, Encoding.UTF8, "application/json");
+		using HttpResponseMessage response = await httpClient.PostAsync($"{baseEndpoint}/items", requestBody);
+
+		string responseBody = await response.Content.ReadAsStringAsync();
+
+		if (response.StatusCode == HttpStatusCode.Unauthorized)
+		{
+			throw new HttpRequestException("Unauthorized key. Check API key used and try again.",
+				null,
+				response.StatusCode);
+		}
+		else if (response.StatusCode == HttpStatusCode.Conflict)
+		{
+			throw new HttpRequestException("Data with specified key already exists.",
+				null,
+				response.StatusCode);
+		}
+		else if (response.StatusCode != HttpStatusCode.Created)
+		{
+			throw new HttpRequestException($"API returned status code {(int)response.StatusCode} ({response.StatusCode}){(!string.IsNullOrWhiteSpace(responseBody) ? $"\n{responseBody}" : string.Empty)}",
+				null,
+				response.StatusCode);
+		}
+
+		Dictionary<string, object>? responseData = JsonSerializer.Deserialize<Dictionary<string, object>>(responseBody);
+		object? retObject;
+
+		if (responseData == null)
+		{
+			throw new InvalidOperationException("Response code is 201 (Created) but body is null.");
+		}
+		else if (!responseData.TryGetValue("key", out retObject))
+		{
+			throw new InvalidOperationException("Response code is 201 (Created) but no key is returned.");
+		}
+
+		string ret = retObject?.ToString()
+			?? throw new InvalidOperationException("Response 'key' value is null.");
+
+		return ret;
 	}
 
-	public async Task<T> InsertAsync<T>(T data, string? key, PutOptions? options)
+	public async Task<UpdateResponse> UpdateAsync(string key, UpdateItem updateParameters)
 	{
-		throw new NotImplementedException();
+		string payload = JsonSerializer.Serialize(updateParameters);
+
+		using StringContent requestBody = new StringContent(payload, Encoding.UTF8, "application/json");
+		using HttpResponseMessage response = await httpClient.PatchAsync($"{baseEndpoint}/items/{key}", requestBody);
+
+		string responseBody = await response.Content.ReadAsStringAsync();
+
+		if (response.StatusCode == HttpStatusCode.Unauthorized)
+		{
+			throw new HttpRequestException("Unauthorized key. Check API key used and try again.",
+				null,
+				response.StatusCode);
+		}
+		else if (response.StatusCode == HttpStatusCode.NotFound)
+		{
+			throw new HttpRequestException("Data with specified key not found.",
+				null,
+				response.StatusCode);
+		}
+		else if (response.StatusCode == HttpStatusCode.Conflict)
+		{
+			throw new HttpRequestException("Data with specified key already exists.",
+				null,
+				response.StatusCode);
+		}
+		// TODO: handle possible 400 (bad request) issues
+		else if (response.StatusCode != HttpStatusCode.OK)
+		{
+			throw new HttpRequestException($"API returned status code {(int)response.StatusCode} ({response.StatusCode}){(!string.IsNullOrWhiteSpace(responseBody) ? $"\n{responseBody}" : string.Empty)}",
+				null,
+				response.StatusCode);
+		}
+
+		UpdateResponse? responseData = JsonSerializer.Deserialize<UpdateResponse>(responseBody)
+			?? throw new InvalidOperationException("Response code is 200 (OK) but body is null.");
+
+		return responseData;
 	}
 
-	public async Task<PutManyResponse> PutManyAsync(object[] data, PutManyOptions? options)
+	public async Task<QueryResponse> QueryAsync(QueryPayload queryPayload)
 	{
-		throw new NotImplementedException();
-	}
+		string payload = JsonSerializer.Serialize(queryPayload);
 
-	public async Task<PutManyResponse<T>> PutManyAsync<T>(T[] data, PutManyOptions? options)
-	{
-		throw new NotImplementedException();
-	}
+		using StringContent requestBody = new StringContent(payload, Encoding.UTF8, "application/json");
+		using HttpResponseMessage response = await httpClient.PostAsync($"{baseEndpoint}/query", requestBody);
 
-	public async Task UpdateAsync(object updates, string key, UpdateOptions? options)
-	{
-		throw new NotImplementedException();
-	}
+		string responseBody = await response.Content.ReadAsStringAsync();
 
-	public async Task<FetchResponse> FetchAsync(object? query, FetchOptions? options)
-	{
-		throw new NotImplementedException();
-	}
+		if (response.StatusCode == HttpStatusCode.Unauthorized)
+		{
+			throw new HttpRequestException("Unauthorized key. Check API key used and try again.",
+				null,
+				response.StatusCode);
+		}
+		// TODO: handle possible 400 (bad request) issues
+		else if (response.StatusCode != HttpStatusCode.OK)
+		{
+			throw new HttpRequestException($"API returned status code {(int)response.StatusCode} ({response.StatusCode}){(!string.IsNullOrWhiteSpace(responseBody) ? $"\n{responseBody}" : string.Empty)}",
+				null,
+				response.StatusCode);
+		}
 
-	public async Task<FetchResponse<T>> FetchAsync<T>(object? query, FetchOptions? options)
-	{
-		throw new NotImplementedException();
+		QueryResponse responseData = JsonSerializer.Deserialize<QueryResponse>(responseBody)
+			?? throw new InvalidOperationException($"Response code is {(int)response.StatusCode} ({(response.StatusCode == HttpStatusCode.OK ? "OK" : "Multi-Status")}) but body is null.");
+
+		return responseData;
 	}
 }

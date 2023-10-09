@@ -3,8 +3,8 @@
 
 namespace Deta.Net.Base;
 
-public struct PutManyOptions
+public enum QuerySort
 {
-	public long? ExpireIn { get; set; }
-	public long? ExpireAt { get; set; }
+	Ascending,
+	Descending
 }
