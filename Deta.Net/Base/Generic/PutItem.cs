@@ -10,6 +10,7 @@ public abstract class PutItem
 {
 	[JsonPropertyName("key")]
 	[JsonPropertyOrder(int.MinValue)]
+	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public string? Key { get; set; }
 }
 

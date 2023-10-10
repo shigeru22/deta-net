@@ -9,5 +9,5 @@ public abstract class GetItem
 {
 	[JsonPropertyName("key")] public string Key { get; set; }
 
-	public GetItem() => Key = ""; // defaults to empty string, specify it upon instantiating
+	public GetItem(string key = "") => Key = key; // defaults to empty string, specify it upon instantiating
 }

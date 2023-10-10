@@ -12,8 +12,8 @@ public partial class DetaBase
 {
 	private const string HOST_URL = "https://database.deta.sh";
 
-	private string baseEndpoint;
-	private HttpClient httpClient;
+	private readonly HttpClient httpClient;
+	private readonly string baseEndpoint;
 
 	internal DetaBase(string apiKey, string baseName)
 	{

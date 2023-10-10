@@ -8,8 +8,8 @@ namespace Deta.Net;
 
 public class Deta
 {
-	private string apiKey;
-	private string projectId;
+	private readonly string apiKey;
+	private readonly string projectId;
 
 	public Deta()
 	{
