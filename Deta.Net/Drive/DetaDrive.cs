@@ -342,21 +342,21 @@ public class DetaDrive
 	public async Task<ListResponse> ListAsync(ListOptions? options)
 	{
 		List<string> queryParameters = new List<string>();
-		if (options.HasValue)
+		if (options != null)
 		{
-			if (options.Value.Limit.HasValue)
+			if (options.Limit.HasValue)
 			{
-				queryParameters.Add($"limit={options.Value.Limit.Value}");
+				queryParameters.Add($"limit={options.Limit.Value}");
 			}
 
-			if (!string.IsNullOrWhiteSpace(options.Value.Prefix))
+			if (!string.IsNullOrWhiteSpace(options.Prefix))
 			{
-				queryParameters.Add($"prefix={options.Value.Prefix}");
+				queryParameters.Add($"prefix={options.Prefix}");
 			}
 
-			if (!string.IsNullOrWhiteSpace(options.Value.Last))
+			if (!string.IsNullOrWhiteSpace(options.Last))
 			{
-				queryParameters.Add($"last={options.Value.Last}");
+				queryParameters.Add($"last={options.Last}");
 			}
 		}
 
