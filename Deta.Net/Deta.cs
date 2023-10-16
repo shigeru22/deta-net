@@ -8,6 +8,9 @@ namespace Deta.Net;
 
 public class Deta
 {
+	private readonly Dictionary<string, DetaBase> bases = new Dictionary<string, DetaBase>();
+	private readonly Dictionary<string, DetaDrive> drives = new Dictionary<string, DetaDrive>();
+
 	private readonly string apiKey;
 	private readonly string projectId;
 
@@ -38,6 +41,25 @@ public class Deta
 		projectId = apiKey.Split('_')[0];
 	}
 
-	public DetaBase GetBase(string baseName) => new DetaBase(apiKey, baseName);
-	public DetaDrive GetDrive(string driveName) => new DetaDrive(apiKey, driveName);
+	public DetaBase GetBase(string baseName)
+	{
+		if (!bases.TryGetValue(baseName, out DetaBase? ret))
+		{
+			ret = new DetaBase(apiKey, baseName);
+			bases.Add(baseName, ret);
+		}
+
+		return ret;
+	}
+
+	public DetaDrive GetDrive(string driveName)
+	{
+		if (!drives.TryGetValue(driveName, out DetaDrive? ret))
+		{
+			ret = new DetaDrive(apiKey, driveName);
+			drives.Add(driveName, ret);
+		}
+
+		return ret;
+	}
 }
