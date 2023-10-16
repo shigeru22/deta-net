@@ -24,6 +24,6 @@ public class ListOptions
 	[JsonPropertyOrder(3)]
 	public string? Last { get; set; }
 
-	public ListOptions(bool? recursive, string? prefix, int? limit, string? last)
+	public ListOptions(bool? recursive = null, string? prefix = null, int? limit = null, string? last = null)
 		=> (Recursive, Prefix, Limit, Last) = (recursive, prefix, limit, last);
 }
