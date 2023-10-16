@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Deta.Net.Drive;
 
+[Serializable]
 public class UploadResponse
 {
 	[JsonPropertyName("name")]

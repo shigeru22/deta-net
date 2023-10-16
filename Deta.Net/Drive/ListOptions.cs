@@ -5,10 +5,25 @@ using System.Text.Json.Serialization;
 
 namespace Deta.Net.Drive;
 
-public struct ListOptions
+[Serializable]
+public class ListOptions
 {
-	[JsonPropertyName("recursive")] public bool? Recursive { get; set; }
-	[JsonPropertyName("prefix")] public string? Prefix { get; set; }
-	[JsonPropertyName("limit")] public int? Limit { get; set; }
-	[JsonPropertyName("last")] public string? Last { get; set; }
+	[JsonPropertyName("recursive")]
+	[JsonPropertyOrder(0)]
+	public bool? Recursive { get; set; }
+
+	[JsonPropertyName("prefix")]
+	[JsonPropertyOrder(1)]
+	public string? Prefix { get; set; }
+
+	[JsonPropertyName("limit")]
+	[JsonPropertyOrder(2)]
+	public int? Limit { get; set; }
+
+	[JsonPropertyName("last")]
+	[JsonPropertyOrder(3)]
+	public string? Last { get; set; }
+
+	public ListOptions(bool? recursive, string? prefix, int? limit, string? last)
+		=> (Recursive, Prefix, Limit, Last) = (recursive, prefix, limit, last);
 }

@@ -5,19 +5,31 @@ using System.Text.Json.Serialization;
 
 namespace Deta.Net.Drive;
 
+[Serializable]
 public class ListResponse
 {
-	[JsonPropertyName("names")] public string[] Names { get; init; }
-	[JsonPropertyName("paging")] public ListResponsePaging Paging { get; init; }
+	[JsonPropertyName("names")]
+	[JsonPropertyOrder(0)]
+	public string[] Names { get; init; }
+
+	[JsonPropertyName("paging")]
+	[JsonPropertyOrder(1)]
+	public ListResponsePaging Paging { get; init; }
 
 	public ListResponse(string[] names, ListResponsePaging paging)
 		=> (Names, Paging) = (names, paging);
 }
 
+[Serializable]
 public class ListResponsePaging
 {
-	[JsonPropertyName("size")] public int Size { get; init; }
-	[JsonPropertyName("last")] public string Last { get; init; }
+	[JsonPropertyName("size")]
+	[JsonPropertyOrder(0)]
+	public int Size { get; init; }
+
+	[JsonPropertyName("last")]
+	[JsonPropertyOrder(1)]
+	public string Last { get; init; }
 
 	public ListResponsePaging(int size, string last)
 		=> (Size, Last) = (size, last);
