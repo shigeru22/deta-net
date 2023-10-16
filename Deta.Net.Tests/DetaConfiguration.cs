@@ -2,6 +2,7 @@
 // See LICENSE in the repository root for details.
 
 using Deta.Net.Base;
+using Deta.Net.Drive;
 using Microsoft.Extensions.Configuration;
 
 namespace Deta.Net.Tests;
@@ -28,4 +29,5 @@ internal class DetaConfiguration
 	}
 
 	public DetaBase GetBaseInstance() => new Deta(apiKey).GetBase("test-base");
+	public DetaDrive GetDriveInstance() => new Deta(apiKey).GetDrive("test-drive");
 }
