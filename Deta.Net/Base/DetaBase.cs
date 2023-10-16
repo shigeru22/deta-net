@@ -55,7 +55,7 @@ public partial class DetaBase
 				response.StatusCode);
 		}
 
-		PutResponse? responseData = JsonSerializer.Deserialize<PutResponse>(responseBody)
+		PutResponse responseData = JsonSerializer.Deserialize<PutResponse>(responseBody)
 			?? throw new InvalidOperationException($"Response code is {(int)response.StatusCode} ({(response.StatusCode == HttpStatusCode.OK ? "OK" : "Multi-Status")}) but body is null.");
 
 		return responseData;
