@@ -14,14 +14,14 @@ public class DriveListResponse
 
 	[JsonPropertyName("paging")]
 	[JsonPropertyOrder(1)]
-	public ListResponsePaging Paging { get; init; }
+	public DriveListResponsePaging Paging { get; init; }
 
-	public DriveListResponse(string[] names, ListResponsePaging paging)
+	public DriveListResponse(string[] names, DriveListResponsePaging paging)
 		=> (Names, Paging) = (names, paging);
 }
 
 [Serializable]
-public class ListResponsePaging
+public class DriveListResponsePaging
 {
 	[JsonPropertyName("size")]
 	[JsonPropertyOrder(0)]
@@ -31,6 +31,6 @@ public class ListResponsePaging
 	[JsonPropertyOrder(1)]
 	public string Last { get; init; }
 
-	public ListResponsePaging(int size, string last)
+	public DriveListResponsePaging(int size, string last)
 		=> (Size, Last) = (size, last);
 }
