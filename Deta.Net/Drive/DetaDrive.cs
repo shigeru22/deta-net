@@ -245,7 +245,7 @@ public class DetaDrive
 		string payload = JsonSerializer.Serialize(new DriveDeletePayload(name));
 
 		using StringContent requestBody = new StringContent(payload, Encoding.UTF8, "application/json");
-		using var response = await httpClient.SendAsync(new HttpRequestMessage()
+		using HttpResponseMessage response = await httpClient.SendAsync(new HttpRequestMessage()
 		{
 			Method = HttpMethod.Delete,
 			RequestUri = new Uri($"{HOST_URL}{driveEndpoint}/files"),
@@ -278,7 +278,7 @@ public class DetaDrive
 		string payload = JsonSerializer.Serialize(new DriveDeletePayload(names));
 
 		using StringContent requestBody = new StringContent(payload, Encoding.UTF8, "application/json");
-		using var response = await httpClient.SendAsync(new HttpRequestMessage()
+		using HttpResponseMessage response = await httpClient.SendAsync(new HttpRequestMessage()
 		{
 			Method = HttpMethod.Delete,
 			RequestUri = new Uri($"{HOST_URL}{driveEndpoint}/files"),
@@ -311,7 +311,7 @@ public class DetaDrive
 		string tempPayload = JsonSerializer.Serialize(payload);
 
 		using StringContent requestBody = new StringContent(tempPayload, Encoding.UTF8, "application/json");
-		using var response = await httpClient.SendAsync(new HttpRequestMessage()
+		using HttpResponseMessage response = await httpClient.SendAsync(new HttpRequestMessage()
 		{
 			Method = HttpMethod.Delete,
 			RequestUri = new Uri($"{HOST_URL}{driveEndpoint}/files"),

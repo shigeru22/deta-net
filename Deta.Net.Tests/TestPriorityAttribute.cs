@@ -40,7 +40,7 @@ public class TestPriorityAttribute : ITestCaseOrderer
 			GetOrCreate(sortedMethods, priority).Add(testCase);
 		}
 
-		foreach (var list in sortedMethods.Keys.Select(priority => sortedMethods[priority]))
+		foreach (List<TTestCase>? list in sortedMethods.Keys.Select(priority => sortedMethods[priority]))
 		{
 			list.Sort((x, y) => StringComparer.OrdinalIgnoreCase.Compare(x.TestMethod.Method.Name, y.TestMethod.Method.Name));
 			foreach (TTestCase testCase in list)
