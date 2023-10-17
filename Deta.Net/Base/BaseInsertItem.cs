@@ -17,7 +17,9 @@ public abstract class BaseInsertItem
 [Serializable]
 internal class BaseInsertItemPayload<T>
 {
-	[JsonPropertyName("item")] public T Item { get; init; }
+	[JsonPropertyName("item")]
+	[JsonPropertyOrder(0)]
+	public T Item { get; init; }
 
 	public BaseInsertItemPayload(T item)
 	{

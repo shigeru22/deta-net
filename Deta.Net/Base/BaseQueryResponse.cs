@@ -8,19 +8,29 @@ namespace Deta.Net.Base;
 [Serializable]
 public class BaseQueryResponse
 {
-	[JsonPropertyName("paging")] public QueryPagingResponse Paging { get; init; }
-	[JsonPropertyName("items")] public Dictionary<string, string>[] Items { get; init; }
+	[JsonPropertyName("paging")]
+	[JsonPropertyOrder(0)]
+	public BaseQueryPagingResponse Paging { get; init; }
 
-	public BaseQueryResponse(QueryPagingResponse paging, Dictionary<string, string>[] items)
+	[JsonPropertyName("items")]
+	[JsonPropertyOrder(1)]
+	public Dictionary<string, string>[] Items { get; init; }
+
+	public BaseQueryResponse(BaseQueryPagingResponse paging, Dictionary<string, string>[] items)
 		=> (Paging, Items) = (paging, items);
 }
 
 [Serializable]
-public class QueryPagingResponse
+public class BaseQueryPagingResponse
 {
-	[JsonPropertyName("size")] public int Size { get; init; }
-	[JsonPropertyName("last")] public string Last { get; init; }
+	[JsonPropertyName("size")]
+	[JsonPropertyOrder(0)]
+	public int Size { get; init; }
 
-	public QueryPagingResponse(int size, string last)
+	[JsonPropertyName("last")]
+	[JsonPropertyOrder(1)]
+	public string Last { get; init; }
+
+	public BaseQueryPagingResponse(int size, string last)
 		=> (Size, Last) = (size, last);
 }

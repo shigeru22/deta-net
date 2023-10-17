@@ -8,8 +8,13 @@ namespace Deta.Net.Base;
 [Serializable]
 public class BasePutResponse
 {
-	[JsonPropertyName("processed")] public PutResponseItems Processed { get; init; }
-	[JsonPropertyName("failed")] public PutResponseItems Failed { get; init; }
+	[JsonPropertyName("processed")]
+	[JsonPropertyOrder(0)]
+	public PutResponseItems Processed { get; init; }
+
+	[JsonPropertyName("failed")]
+	[JsonPropertyOrder(1)]
+	public PutResponseItems Failed { get; init; }
 
 	public BasePutResponse(PutResponseItems processed, PutResponseItems failed)
 		=> (Processed, Failed) = (processed, failed);
@@ -18,8 +23,13 @@ public class BasePutResponse
 [Serializable]
 public class BasePutResponse<T>
 {
-	[JsonPropertyName("processed")] public PutResponseItems<T> Processed { get; init; }
-	[JsonPropertyName("failed")] public PutResponseItems<T> Failed { get; init; }
+	[JsonPropertyName("processed")]
+	[JsonPropertyOrder(0)]
+	public PutResponseItems<T> Processed { get; init; }
+
+	[JsonPropertyName("failed")]
+	[JsonPropertyOrder(1)]
+	public PutResponseItems<T> Failed { get; init; }
 
 	public BasePutResponse(PutResponseItems<T> processed, PutResponseItems<T> failed)
 		=> (Processed, Failed) = (processed, failed);

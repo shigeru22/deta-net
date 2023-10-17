@@ -9,18 +9,22 @@ namespace Deta.Net.Base;
 public class BaseQueryPayload
 {
 	[JsonPropertyName("query")]
+	[JsonPropertyOrder(0)]
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public Dictionary<string, string>[]? Query { get; set; }
 
 	[JsonPropertyName("limit")]
+	[JsonPropertyOrder(1)]
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public int? Limit { get; set; }
 
 	[JsonPropertyName("last")]
+	[JsonPropertyOrder(2)]
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public string? Last { get; set; }
 
 	[JsonPropertyName("sort")]
+	[JsonPropertyOrder(3)]
 	[JsonConverter(typeof(BaseQuerySortEnumConverter))]
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public BaseQuerySort? Sort { get; set; }
