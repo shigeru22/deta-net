@@ -6,12 +6,12 @@ using System.Text.Json.Serialization;
 namespace Deta.Net.Base;
 
 [Serializable]
-public class QueryResponse
+public class BaseQueryResponse
 {
 	[JsonPropertyName("paging")] public QueryPagingResponse Paging { get; init; }
 	[JsonPropertyName("items")] public Dictionary<string, string>[] Items { get; init; }
 
-	public QueryResponse(QueryPagingResponse paging, Dictionary<string, string>[] items)
+	public BaseQueryResponse(QueryPagingResponse paging, Dictionary<string, string>[] items)
 		=> (Paging, Items) = (paging, items);
 }
 

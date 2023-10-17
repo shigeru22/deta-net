@@ -6,12 +6,12 @@ using System.Text.Json.Serialization;
 namespace Deta.Net.Drive;
 
 [Serializable]
-public class DeletePayload
+public class DriveDeletePayload
 {
 	[JsonPropertyName("names")]
 	[JsonPropertyOrder(0)]
 	public string[] Names { get; set; }
 
-	public DeletePayload(string name) => Names = new string[] { name };
-	public DeletePayload(string[] names) => Names = names;
+	public DriveDeletePayload(string name) => Names = new string[] { name };
+	public DriveDeletePayload(string[] names) => Names = names;
 }

@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace Deta.Net.Base;
 
 [Serializable]
-public abstract class InsertItem
+public abstract class BaseInsertItem
 {
 	[JsonPropertyName("key")]
 	[JsonPropertyOrder(int.MinValue)]
@@ -15,11 +15,11 @@ public abstract class InsertItem
 }
 
 [Serializable]
-internal class InsertItemPayload<T>
+internal class BaseInsertItemPayload<T>
 {
 	[JsonPropertyName("item")] public T Item { get; init; }
 
-	public InsertItemPayload(T item)
+	public BaseInsertItemPayload(T item)
 	{
 		Item = item;
 	}

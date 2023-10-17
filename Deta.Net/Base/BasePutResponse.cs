@@ -6,22 +6,22 @@ using System.Text.Json.Serialization;
 namespace Deta.Net.Base;
 
 [Serializable]
-public class PutResponse
+public class BasePutResponse
 {
 	[JsonPropertyName("processed")] public PutResponseItems Processed { get; init; }
 	[JsonPropertyName("failed")] public PutResponseItems Failed { get; init; }
 
-	public PutResponse(PutResponseItems processed, PutResponseItems failed)
+	public BasePutResponse(PutResponseItems processed, PutResponseItems failed)
 		=> (Processed, Failed) = (processed, failed);
 }
 
 [Serializable]
-public class PutResponse<T>
+public class BasePutResponse<T>
 {
 	[JsonPropertyName("processed")] public PutResponseItems<T> Processed { get; init; }
 	[JsonPropertyName("failed")] public PutResponseItems<T> Failed { get; init; }
 
-	public PutResponse(PutResponseItems<T> processed, PutResponseItems<T> failed)
+	public BasePutResponse(PutResponseItems<T> processed, PutResponseItems<T> failed)
 		=> (Processed, Failed) = (processed, failed);
 }
 

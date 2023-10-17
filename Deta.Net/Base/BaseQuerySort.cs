@@ -3,7 +3,7 @@
 
 namespace Deta.Net.Base;
 
-public enum QuerySort
+public enum BaseQuerySort
 {
 	Ascending,
 	Descending

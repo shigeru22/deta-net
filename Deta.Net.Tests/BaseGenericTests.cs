@@ -20,7 +20,7 @@ public class BaseGenericTests
 		};
 
 		DetaBase db = DetaConfiguration.Instance.GetBaseInstance();
-		PutResponse<PutData> temp = await db.PutAsync(putItems);
+		BasePutResponse<PutData> temp = await db.PutAsync(putItems);
 
 		Assert.Equal(temp.Processed.Items[0].Key, putItems[0].Key);
 		Assert.Equal(temp.Processed.Items[0].Id, putItems[0].Id);
@@ -87,7 +87,7 @@ public class BaseGenericTests
 	[Priority(4)]
 	public async void DeleteItemTestAsync()
 	{
-		QueryPayload payload = new QueryPayload()
+		BaseQueryPayload payload = new BaseQueryPayload()
 		{
 			Query = new Dictionary<string, string>[]
 			{
@@ -100,7 +100,7 @@ public class BaseGenericTests
 
 		DetaBase db = DetaConfiguration.Instance.GetBaseInstance();
 
-		QueryResponse before = await db.QueryAsync(payload);
+		BaseQueryResponse before = await db.QueryAsync(payload);
 
 		if (before.Items.Length != 4)
 		{
@@ -113,7 +113,7 @@ public class BaseGenericTests
 		await db.DeleteAsync("A003");
 		await db.DeleteAsync("A004");
 
-		QueryResponse after = await db.QueryAsync(payload);
+		BaseQueryResponse after = await db.QueryAsync(payload);
 
 		Assert.Empty(after.Items);
 	}

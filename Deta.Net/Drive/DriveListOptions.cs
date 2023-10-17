@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace Deta.Net.Drive;
 
 [Serializable]
-public class ListOptions
+public class DriveListOptions
 {
 	[JsonPropertyName("recursive")]
 	[JsonPropertyOrder(0)]
@@ -24,6 +24,6 @@ public class ListOptions
 	[JsonPropertyOrder(3)]
 	public string? Last { get; set; }
 
-	public ListOptions(bool? recursive = null, string? prefix = null, int? limit = null, string? last = null)
+	public DriveListOptions(bool? recursive = null, string? prefix = null, int? limit = null, string? last = null)
 		=> (Recursive, Prefix, Limit, Last) = (recursive, prefix, limit, last);
 }

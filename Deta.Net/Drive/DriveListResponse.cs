@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace Deta.Net.Drive;
 
 [Serializable]
-public class ListResponse
+public class DriveListResponse
 {
 	[JsonPropertyName("names")]
 	[JsonPropertyOrder(0)]
@@ -16,7 +16,7 @@ public class ListResponse
 	[JsonPropertyOrder(1)]
 	public ListResponsePaging Paging { get; init; }
 
-	public ListResponse(string[] names, ListResponsePaging paging)
+	public DriveListResponse(string[] names, ListResponsePaging paging)
 		=> (Names, Paging) = (names, paging);
 }
 

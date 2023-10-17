@@ -10,7 +10,7 @@ namespace Deta.Net.Base;
 
 public partial class DetaBase
 {
-	public async Task<PutResponse<T>> PutAsync<T>(T[] data) where T : PutItem
+	public async Task<BasePutResponse<T>> PutAsync<T>(T[] data) where T : PutItem
 	{
 		string payload = JsonSerializer.Serialize(new PutItems<T>(data));
 
@@ -32,7 +32,7 @@ public partial class DetaBase
 				response.StatusCode);
 		}
 
-		PutResponse<T>? responseData = JsonSerializer.Deserialize<PutResponse<T>>(responseBody)
+		BasePutResponse<T>? responseData = JsonSerializer.Deserialize<BasePutResponse<T>>(responseBody)
 			?? throw new InvalidOperationException($"Response code is {(int)response.StatusCode} ({(response.StatusCode == HttpStatusCode.OK ? "OK" : "Multi-Status")}) but body is null.");
 
 		return responseData;
@@ -67,7 +67,7 @@ public partial class DetaBase
 
 	public async Task<string> InsertAsync<T>(T data)
 	{
-		string payload = JsonSerializer.Serialize(new InsertItemPayload<T>(data));
+		string payload = JsonSerializer.Serialize(new BaseInsertItemPayload<T>(data));
 
 		using StringContent requestBody = new StringContent(payload, Encoding.UTF8, "application/json");
 		using HttpResponseMessage response = await httpClient.PostAsync($"{baseEndpoint}/items", requestBody);
@@ -93,7 +93,7 @@ public partial class DetaBase
 				response.StatusCode);
 		}
 
-		InsertResponse? responseData = JsonSerializer.Deserialize<InsertResponse>(responseBody);
+		BaseInsertResponse? responseData = JsonSerializer.Deserialize<BaseInsertResponse>(responseBody);
 
 		if (responseData == null)
 		{

@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace Deta.Net.Base;
 
 [Serializable]
-public class UpdateResponse
+public class BaseUpdateResponse
 {
 	[JsonPropertyName("key")]
 	[JsonPropertyOrder(int.MinValue)]
@@ -22,6 +22,6 @@ public class UpdateResponse
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public string[]? Delete { get; init; }
 
-	public UpdateResponse(string key, Dictionary<string, object>? set = null, string[]? delete = null)
+	public BaseUpdateResponse(string key, Dictionary<string, object>? set = null, string[]? delete = null)
 		=> (Key, Set, Delete) = (key, set, delete);
 }

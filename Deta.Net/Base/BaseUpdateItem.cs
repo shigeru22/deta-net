@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace Deta.Net.Base;
 
 [Serializable]
-public class UpdateItem
+public class BaseUpdateItem
 {
 	[JsonPropertyName("set")]
 	[JsonPropertyOrder(0)]
@@ -33,7 +33,7 @@ public class UpdateItem
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public string[]? Delete { get; set; }
 
-	public UpdateItem(Dictionary<string, object>? set = null,
+	public BaseUpdateItem(Dictionary<string, object>? set = null,
 			Dictionary<string, int>? increment = null,
 			Dictionary<string, object[]>? append = null,
 			Dictionary<string, object[]>? prepend = null,

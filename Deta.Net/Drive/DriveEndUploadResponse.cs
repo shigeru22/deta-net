@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace Deta.Net.Drive;
 
 [Serializable]
-public class UploadResponse
+public class DriveEndUploadResponse
 {
 	[JsonPropertyName("name")]
 	[JsonPropertyOrder(0)]
@@ -16,18 +16,14 @@ public class UploadResponse
 	[JsonPropertyOrder(1)]
 	public string UploadId { get; init; }
 
-	[JsonPropertyName("part")]
-	[JsonPropertyOrder(2)]
-	public int Part { get; init; }
-
 	[JsonPropertyName("project_id")]
-	[JsonPropertyOrder(3)]
+	[JsonPropertyOrder(2)]
 	public string ProjectId { get; init; }
 
 	[JsonPropertyName("drive_name")]
-	[JsonPropertyOrder(4)]
+	[JsonPropertyOrder(3)]
 	public string DriveName { get; init; }
 
-	public UploadResponse(string name, string uploadId, int part, string projectId, string driveName)
-		=> (Name, UploadId, Part, ProjectId, DriveName) = (name, uploadId, part, projectId, driveName);
+	public DriveEndUploadResponse(string name, string uploadId, string projectId, string driveName)
+		=> (Name, UploadId, ProjectId, DriveName) = (name, uploadId, projectId, driveName);
 }

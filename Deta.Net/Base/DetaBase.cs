@@ -33,7 +33,7 @@ public partial class DetaBase
 		httpClient.DefaultRequestHeaders.Add("X-API-Key", apiKey);
 	}
 
-	public async Task<PutResponse> PutAsync(Dictionary<string, object>[] data)
+	public async Task<BasePutResponse> PutAsync(Dictionary<string, object>[] data)
 	{
 		string payload = JsonSerializer.Serialize(new PutItems<Dictionary<string, object>>(data));
 
@@ -55,7 +55,7 @@ public partial class DetaBase
 				response.StatusCode);
 		}
 
-		PutResponse responseData = JsonSerializer.Deserialize<PutResponse>(responseBody)
+		BasePutResponse responseData = JsonSerializer.Deserialize<BasePutResponse>(responseBody)
 			?? throw new InvalidOperationException($"Response code is {(int)response.StatusCode} ({(response.StatusCode == HttpStatusCode.OK ? "OK" : "Multi-Status")}) but body is null.");
 
 		return responseData;
@@ -110,7 +110,7 @@ public partial class DetaBase
 
 	public async Task<string> InsertAsync(Dictionary<string, object> data)
 	{
-		string payload = JsonSerializer.Serialize(new InsertItemPayload<Dictionary<string, object>>(data));
+		string payload = JsonSerializer.Serialize(new BaseInsertItemPayload<Dictionary<string, object>>(data));
 
 		using StringContent requestBody = new StringContent(payload, Encoding.UTF8, "application/json");
 		using HttpResponseMessage response = await httpClient.PostAsync($"{baseEndpoint}/items", requestBody);
@@ -154,7 +154,7 @@ public partial class DetaBase
 		return ret;
 	}
 
-	public async Task<UpdateResponse> UpdateAsync(string key, UpdateItem updateParameters)
+	public async Task<BaseUpdateResponse> UpdateAsync(string key, BaseUpdateItem updateParameters)
 	{
 		string payload = JsonSerializer.Serialize(updateParameters);
 
@@ -189,13 +189,13 @@ public partial class DetaBase
 				response.StatusCode);
 		}
 
-		UpdateResponse? responseData = JsonSerializer.Deserialize<UpdateResponse>(responseBody)
+		BaseUpdateResponse? responseData = JsonSerializer.Deserialize<BaseUpdateResponse>(responseBody)
 			?? throw new InvalidOperationException("Response code is 200 (OK) but body is null.");
 
 		return responseData;
 	}
 
-	public async Task<QueryResponse> QueryAsync(QueryPayload queryPayload)
+	public async Task<BaseQueryResponse> QueryAsync(BaseQueryPayload queryPayload)
 	{
 		string payload = JsonSerializer.Serialize(queryPayload);
 
@@ -218,7 +218,7 @@ public partial class DetaBase
 				response.StatusCode);
 		}
 
-		QueryResponse responseData = JsonSerializer.Deserialize<QueryResponse>(responseBody)
+		BaseQueryResponse responseData = JsonSerializer.Deserialize<BaseQueryResponse>(responseBody)
 			?? throw new InvalidOperationException($"Response code is {(int)response.StatusCode} ({(response.StatusCode == HttpStatusCode.OK ? "OK" : "Multi-Status")}) but body is null.");
 
 		return responseData;

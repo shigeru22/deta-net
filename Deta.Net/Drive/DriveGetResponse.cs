@@ -3,12 +3,12 @@
 
 namespace Deta.Net.Drive;
 
-public class GetResponse
+public class DriveGetResponse
 {
 	public string FileName { get; init; }
 	public int Length { get; init; }
 	public byte[] Content { get; init; }
 
-	public GetResponse(string fileName, int length, byte[] content)
+	public DriveGetResponse(string fileName, int length, byte[] content)
 		=> (FileName, Length, Content) = (fileName, length, content);
 }

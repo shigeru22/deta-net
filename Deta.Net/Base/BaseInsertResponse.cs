@@ -5,9 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace Deta.Net.Base;
 
-internal class InsertResponse
+internal class BaseInsertResponse
 {
 	[JsonPropertyName("key")] public string Key { get; init; }
 
-	public InsertResponse(string key) => Key = key;
+	public BaseInsertResponse(string key) => Key = key;
 }

@@ -6,68 +6,75 @@ using Deta.Net.Drive;
 
 namespace Deta.Net.Tests;
 
+[TestCaseOrderer("Deta.Net.Tests.TestPriorityAttribute", "Deta.Net.Tests")]
 public class DriveTests
 {
 	[Fact]
+	[Priority(1)]
 	public async void PutItemTestByFileAsync()
 	{
 		string filePath = $"{Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}/Files/1-file.jpg";
 
 		DetaDrive drv = DetaConfiguration.Instance.GetDriveInstance();
-		PutResponse temp = await drv.PutAsync("/1-file.jpg", filePath);
+		DrivePutResponse temp = await drv.PutAsync("/1-file.jpg", filePath);
 
 		Assert.Equal("/1-file.jpg", temp.Name);
 	}
 
 	[Fact]
+	[Priority(2)]
 	public async void PutItemTestByDataAsync()
 	{
 		string filePath = $"{Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}/Files/1-byte.jpg";
 		byte[] data = await File.ReadAllBytesAsync(filePath);
 
 		DetaDrive drv = DetaConfiguration.Instance.GetDriveInstance();
-		PutResponse temp = await drv.PutAsync("1-byte.jpg", data);
+		DrivePutResponse temp = await drv.PutAsync("1-byte.jpg", data);
 
 		Assert.Equal("/1-byte.jpg", temp.Name);
 	}
 
 	[Fact]
+	[Priority(3)]
 	public async void UploadItemTestAsync()
 	{
 		string filePath = $"{Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}/Files/2.jpg";
 
 		DetaDrive drv = DetaConfiguration.Instance.GetDriveInstance();
-		EndUploadResponse temp = await drv.UploadAsync("/2.jpg", filePath);
+		DriveEndUploadResponse temp = await drv.UploadAsync("/2.jpg", filePath);
 
 		Assert.Equal("/2.jpg", temp.Name);
 	}
 
 	[Fact]
+	[Priority(4)]
 	public async void GetItemTestAsync()
 	{
 		string filePath = $"{Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}/Files/1-byte.jpg";
 		byte[] data = await File.ReadAllBytesAsync(filePath);
 
 		DetaDrive drv = DetaConfiguration.Instance.GetDriveInstance();
-		GetResponse temp = await drv.GetAsync("/1-file.jpg");
+		DriveGetResponse temp = await drv.GetAsync("/1-file.jpg");
 
 		Assert.Equal(data, temp.Content);
 	}
 
 	[Fact]
+	[Priority(5)]
 	public async void DeleteSingleItemTestAsync()
 	{
 		DetaDrive drv = DetaConfiguration.Instance.GetDriveInstance();
-		DeleteResponse temp = await drv.DeleteAsync("/1-byte.jpg");
+		DriveDeleteResponse temp = await drv.DeleteAsync("/1-byte.jpg");
 
 		Assert.Equal("1-byte.jpg", temp.Deleted[0]);
 	}
 
 	[Fact]
+	[Priority(6)]
 	public async void DeleteMultipleItemsTestAsync()
 	{
 		DetaDrive drv = DetaConfiguration.Instance.GetDriveInstance();
-		DeleteResponse temp = await drv.DeleteAsync(new string[] { "/1-file.jpg", "/1-byte.jpg" });
+		DriveDeleteResponse temp = await drv.DeleteAsync(new string[] { "/1-file.jpg", "/1-byte.jpg" });
 
 		// random?
 		Assert.Equal("1-file.jpg", temp.Deleted[0]);
@@ -75,12 +82,13 @@ public class DriveTests
 	}
 
 	[Fact]
+	[Priority(7)]
 	public async void DeleteByPayloadTestAsync()
 	{
-		DeletePayload payload = new DeletePayload(new string[] { "/1-file.jpg", "/1-byte.jpg" });
+		DriveDeletePayload payload = new DriveDeletePayload(new string[] { "/1-file.jpg", "/1-byte.jpg" });
 
 		DetaDrive drv = DetaConfiguration.Instance.GetDriveInstance();
-		DeleteResponse temp = await drv.DeleteAsync(payload);
+		DriveDeleteResponse temp = await drv.DeleteAsync(payload);
 
 		// random?
 		Assert.Equal("1-file.jpg", temp.Deleted[0]);
@@ -88,16 +96,17 @@ public class DriveTests
 	}
 
 	[Fact]
+	[Priority(8)]
 	public async void ListItemsTestAsync()
 	{
-		ListOptions options = new ListOptions()
+		DriveListOptions options = new DriveListOptions()
 		{
 			Prefix = "1-",
 			Limit = 1
 		};
 
 		DetaDrive drv = DetaConfiguration.Instance.GetDriveInstance();
-		ListResponse temp = await drv.ListAsync(options);
+		DriveListResponse temp = await drv.ListAsync(options);
 
 		Assert.Equal("1-file.jpg", temp.Names[0]);
 		Assert.Equal("1-byte.jpg", temp.Names[1]);

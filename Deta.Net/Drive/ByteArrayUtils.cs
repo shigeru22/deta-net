@@ -3,7 +3,7 @@
 
 namespace Deta.Net.Drive;
 
-public static class ByteArrayUtils
+internal static class ByteArrayUtils
 {
 	internal static IEnumerable<byte[]> GetChunksEnumerator(this byte[] buffer, int size)
 	{

@@ -33,7 +33,7 @@ public class DetaDrive
 		httpClient.DefaultRequestHeaders.Add("X-API-Key", apiKey);
 	}
 
-	public async Task<PutResponse> PutAsync(string name, string filePath, string? contentType = null)
+	public async Task<DrivePutResponse> PutAsync(string name, string filePath, string? contentType = null)
 	{
 		if (!File.Exists(filePath))
 		{
@@ -71,13 +71,13 @@ public class DetaDrive
 				response.StatusCode);
 		}
 
-		PutResponse responseData = JsonSerializer.Deserialize<PutResponse>(responseBody)
+		DrivePutResponse responseData = JsonSerializer.Deserialize<DrivePutResponse>(responseBody)
 			?? throw new InvalidOperationException($"Response code is 201 (Created) but body is null.");
 
 		return responseData;
 	}
 
-	public async Task<PutResponse> PutAsync(string name, byte[] data, string? contentType = null)
+	public async Task<DrivePutResponse> PutAsync(string name, byte[] data, string? contentType = null)
 	{
 		if (data.Length > CHUNK_SIZE)
 		{
@@ -108,13 +108,13 @@ public class DetaDrive
 				response.StatusCode);
 		}
 
-		PutResponse responseData = JsonSerializer.Deserialize<PutResponse>(responseBody)
+		DrivePutResponse responseData = JsonSerializer.Deserialize<DrivePutResponse>(responseBody)
 			?? throw new InvalidOperationException($"Response code is 201 (Created) but body is null.");
 
 		return responseData;
 	}
 
-	public async Task<EndUploadResponse> UploadAsync(string name, string filePath)
+	public async Task<DriveEndUploadResponse> UploadAsync(string name, string filePath)
 	{
 		if (!File.Exists(filePath))
 		{
@@ -124,7 +124,7 @@ public class DetaDrive
 		string targetPath = name.StartsWith("/") ? name : $"/{name}";
 		byte[] fileContents = await File.ReadAllBytesAsync(filePath);
 
-		StartUploadResponse startResponse = await StartUploadAsync(targetPath);
+		DriveStartUploadResponse startResponse = await StartUploadAsync(targetPath);
 
 		int part = 1;
 		foreach (byte[] chunk in fileContents.GetChunksEnumerator(CHUNK_SIZE))
@@ -135,11 +135,11 @@ public class DetaDrive
 				chunk);
 		}
 
-		EndUploadResponse endResponse = await EndUploadAsync(startResponse.UploadId, startResponse.Name);
+		DriveEndUploadResponse endResponse = await EndUploadAsync(startResponse.UploadId, startResponse.Name);
 		return endResponse;
 	}
 
-	public async Task<StartUploadResponse> StartUploadAsync(string path)
+	public async Task<DriveStartUploadResponse> StartUploadAsync(string path)
 	{
 		using HttpResponseMessage response = await httpClient.PostAsync($"{driveEndpoint}/uploads?name={path}", null);
 
@@ -158,13 +158,13 @@ public class DetaDrive
 				response.StatusCode);
 		}
 
-		StartUploadResponse responseData = JsonSerializer.Deserialize<StartUploadResponse>(responseBody)
+		DriveStartUploadResponse responseData = JsonSerializer.Deserialize<DriveStartUploadResponse>(responseBody)
 			?? throw new InvalidOperationException($"Response code is 202 (Accepted) but body is null.");
 
 		return responseData;
 	}
 
-	public async Task<UploadResponse> UploadPartAsync(string uploadId, string path, int part, byte[] chunk)
+	public async Task<DriveUploadResponse> UploadPartAsync(string uploadId, string path, int part, byte[] chunk)
 	{
 		using ByteArrayContent requestBody = new ByteArrayContent(chunk);
 		using HttpResponseMessage response = await httpClient.PostAsync($"{driveEndpoint}/uploads/{uploadId}/parts?name={path}&part={part}", requestBody);
@@ -184,13 +184,13 @@ public class DetaDrive
 				response.StatusCode);
 		}
 
-		UploadResponse? responseData = JsonSerializer.Deserialize<UploadResponse>(responseBody)
+		DriveUploadResponse? responseData = JsonSerializer.Deserialize<DriveUploadResponse>(responseBody)
 			?? throw new InvalidOperationException("Response code is 200 (OK) but body is null.");
 
 		return responseData;
 	}
 
-	public async Task<EndUploadResponse> EndUploadAsync(string uploadId, string path)
+	public async Task<DriveEndUploadResponse> EndUploadAsync(string uploadId, string path)
 	{
 		using HttpResponseMessage response = await httpClient.PatchAsync($"{driveEndpoint}/uploads/{uploadId}?name={path}", null);
 
@@ -209,13 +209,13 @@ public class DetaDrive
 				response.StatusCode);
 		}
 
-		EndUploadResponse? responseData = JsonSerializer.Deserialize<EndUploadResponse>(responseBody)
+		DriveEndUploadResponse? responseData = JsonSerializer.Deserialize<DriveEndUploadResponse>(responseBody)
 			?? throw new InvalidOperationException($"Response code is 200 (OK) but body is null.");
 
 		return responseData;
 	}
 
-	public async Task<GetResponse> GetAsync(string name)
+	public async Task<DriveGetResponse> GetAsync(string name)
 	{
 		using HttpResponseMessage response = await httpClient.GetAsync($"{driveEndpoint}/files/download?name={name}");
 
@@ -236,13 +236,13 @@ public class DetaDrive
 		int length = int.Parse(response.Content.Headers.GetValues("Content-Length").FirstOrDefault("0"));
 		byte[] content = await response.Content.ReadAsByteArrayAsync();
 
-		GetResponse ret = new GetResponse(name, length, content);
+		DriveGetResponse ret = new DriveGetResponse(name, length, content);
 		return ret;
 	}
 
-	public async Task<DeleteResponse> DeleteAsync(string name)
+	public async Task<DriveDeleteResponse> DeleteAsync(string name)
 	{
-		string payload = JsonSerializer.Serialize(new DeletePayload(name));
+		string payload = JsonSerializer.Serialize(new DriveDeletePayload(name));
 
 		using StringContent requestBody = new StringContent(payload, Encoding.UTF8, "application/json");
 		using var response = await httpClient.SendAsync(new HttpRequestMessage()
@@ -267,15 +267,15 @@ public class DetaDrive
 				response.StatusCode);
 		}
 
-		DeleteResponse responseData = JsonSerializer.Deserialize<DeleteResponse>(responseBody)
+		DriveDeleteResponse responseData = JsonSerializer.Deserialize<DriveDeleteResponse>(responseBody)
 			?? throw new InvalidOperationException("Response code is 200 (OK) but body is null.");
 
 		return responseData;
 	}
 
-	public async Task<DeleteResponse> DeleteAsync(string[] names)
+	public async Task<DriveDeleteResponse> DeleteAsync(string[] names)
 	{
-		string payload = JsonSerializer.Serialize(new DeletePayload(names));
+		string payload = JsonSerializer.Serialize(new DriveDeletePayload(names));
 
 		using StringContent requestBody = new StringContent(payload, Encoding.UTF8, "application/json");
 		using var response = await httpClient.SendAsync(new HttpRequestMessage()
@@ -300,13 +300,13 @@ public class DetaDrive
 				response.StatusCode);
 		}
 
-		DeleteResponse responseData = JsonSerializer.Deserialize<DeleteResponse>(responseBody)
+		DriveDeleteResponse responseData = JsonSerializer.Deserialize<DriveDeleteResponse>(responseBody)
 			?? throw new InvalidOperationException("Response code is 200 (OK) but body is null.");
 
 		return responseData;
 	}
 
-	public async Task<DeleteResponse> DeleteAsync(DeletePayload payload)
+	public async Task<DriveDeleteResponse> DeleteAsync(DriveDeletePayload payload)
 	{
 		string tempPayload = JsonSerializer.Serialize(payload);
 
@@ -333,13 +333,13 @@ public class DetaDrive
 				response.StatusCode);
 		}
 
-		DeleteResponse responseData = JsonSerializer.Deserialize<DeleteResponse>(responseBody)
+		DriveDeleteResponse responseData = JsonSerializer.Deserialize<DriveDeleteResponse>(responseBody)
 			?? throw new InvalidOperationException("Response code is 200 (OK) but body is null.");
 
 		return responseData;
 	}
 
-	public async Task<ListResponse> ListAsync(ListOptions? options)
+	public async Task<DriveListResponse> ListAsync(DriveListOptions? options)
 	{
 		List<string> queryParameters = new List<string>();
 		if (options != null)
@@ -378,7 +378,7 @@ public class DetaDrive
 				response.StatusCode);
 		}
 
-		ListResponse responseData = JsonSerializer.Deserialize<ListResponse>(responseBody)
+		DriveListResponse responseData = JsonSerializer.Deserialize<DriveListResponse>(responseBody)
 			?? throw new InvalidOperationException($"Response code is 200 (OK) but body is null.");
 
 		return responseData;

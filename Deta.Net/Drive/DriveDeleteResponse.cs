@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace Deta.Net.Drive;
 
 [Serializable]
-public class DeleteResponse
+public class DriveDeleteResponse
 {
 	[JsonPropertyName("deleted")]
 	[JsonPropertyOrder(0)]
@@ -16,6 +16,6 @@ public class DeleteResponse
 	[JsonPropertyOrder(1)]
 	public Dictionary<string, string> Failed { get; init; }
 
-	public DeleteResponse(string[] deleted, Dictionary<string, string> failed)
+	public DriveDeleteResponse(string[] deleted, Dictionary<string, string> failed)
 		=> (Deleted, Failed) = (deleted, failed);
 }

@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace Deta.Net.Base;
 
 [Serializable]
-public class QueryPayload
+public class BaseQueryPayload
 {
 	[JsonPropertyName("query")]
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -21,13 +21,13 @@ public class QueryPayload
 	public string? Last { get; set; }
 
 	[JsonPropertyName("sort")]
-	[JsonConverter(typeof(QuerySortEnumConverter))]
+	[JsonConverter(typeof(BaseQuerySortEnumConverter))]
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-	public QuerySort? Sort { get; set; }
+	public BaseQuerySort? Sort { get; set; }
 
-	public QueryPayload(Dictionary<string, string>[]? query = null,
+	public BaseQueryPayload(Dictionary<string, string>[]? query = null,
 			int? limit = null,
 			string? last = null,
-			QuerySort? sort = null)
+			BaseQuerySort? sort = null)
 		=> (Query, Limit, Last, Sort) = (query, limit, last, sort);
 }
