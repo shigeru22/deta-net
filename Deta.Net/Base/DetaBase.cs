@@ -195,9 +195,11 @@ public partial class DetaBase
 		return responseData;
 	}
 
-	public async Task<BaseQueryResponse> QueryAsync(BaseQueryPayload queryPayload)
+	public async Task<BaseQueryResponse> QueryAsync(BaseQueryPayload? queryPayload = null)
 	{
-		string payload = JsonSerializer.Serialize(queryPayload);
+		string payload = queryPayload != null
+			? JsonSerializer.Serialize(queryPayload)
+			: string.Empty;
 
 		using StringContent requestBody = new StringContent(payload, Encoding.UTF8, "application/json");
 		using HttpResponseMessage response = await httpClient.PostAsync($"{baseEndpoint}/query", requestBody);
