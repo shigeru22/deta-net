@@ -14,9 +14,9 @@ public class BaseQueryResponse
 
 	[JsonPropertyName("items")]
 	[JsonPropertyOrder(1)]
-	public Dictionary<string, string>[] Items { get; init; }
+	public Dictionary<string, object>[] Items { get; init; }
 
-	public BaseQueryResponse(BaseQueryPagingResponse paging, Dictionary<string, string>[] items)
+	public BaseQueryResponse(BaseQueryPagingResponse paging, Dictionary<string, object>[] items)
 		=> (Paging, Items) = (paging, items);
 }
 
