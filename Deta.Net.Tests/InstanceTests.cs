@@ -31,7 +31,7 @@ public class InstanceTests
 	{
 		if (string.IsNullOrWhiteSpace(projectKey))
 		{
-			Assert.Throws<InvalidOperationException>(() =>
+			_ = Assert.Throws<InvalidOperationException>(() =>
 			{
 				Deta detaInstance = new Deta(projectKey);
 			});

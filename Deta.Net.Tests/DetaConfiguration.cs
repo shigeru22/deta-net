@@ -9,25 +9,61 @@ namespace Deta.Net.Tests;
 
 internal class DetaConfiguration
 {
+	private const string BASE_TEST_NAME = "test-base";
+	private const string BASE_GENERIC_TEST_NAME = "test-base-generic";
+	private const string DRIVE_TEST_NAME = "test-drive";
+
 	private readonly static DetaConfiguration instance = new DetaConfiguration();
 	public static DetaConfiguration Instance => instance;
 
-	private readonly IConfigurationRoot config;
+	private readonly Deta detaInstance;
 
-	private readonly string apiKey;
+	private DetaBase? baseTestInstance;
+	private DetaBase? baseGenericTestInstance;
+	private DetaDrive? driveTestInstance;
+
+	public DetaBase BaseTestInstance
+	{
+		get
+		{
+			baseTestInstance ??= detaInstance.GetBase(BASE_TEST_NAME);
+			return baseTestInstance;
+		}
+	}
+
+	public DetaBase BaseGenericTestInstance
+	{
+		get
+		{
+			baseGenericTestInstance ??= detaInstance.GetBase(BASE_GENERIC_TEST_NAME);
+			return baseGenericTestInstance;
+		}
+	}
+
+	public DetaDrive DriveTestInstance
+	{
+		get
+		{
+			driveTestInstance ??= detaInstance.GetDrive(DRIVE_TEST_NAME);
+			return driveTestInstance;
+		}
+	}
 
 	private DetaConfiguration()
 	{
-		config = new ConfigurationBuilder()
+		IConfigurationRoot config = new ConfigurationBuilder()
 			.SetBasePath(Directory.GetCurrentDirectory())
 			.AddJsonFile("appsettings.json", true, true)
 			.Build();
 
-		apiKey = config["apiKey"]
+		string apiKey = config["apiKey"]
 			?? Environment.GetEnvironmentVariable("DETA_PROJECT_KEY")
 				?? throw new InvalidOperationException("Either 'apiKey' value in appsettings.json or DETA_PROJECT_KEY environment variable must be set for this test.");
-	}
 
-	public DetaBase GetBaseInstance() => new Deta(apiKey).GetBase("test-base");
-	public DetaDrive GetDriveInstance() => new Deta(apiKey).GetDrive("test-drive");
+		detaInstance = new Deta(apiKey);
+
+		baseTestInstance = null;
+		baseGenericTestInstance = null;
+		driveTestInstance = null;
+	}
 }

@@ -12,7 +12,6 @@ public class TestPriorityAttribute : ITestCaseOrderer
 {
 	private static TValue GetOrCreate<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key) where TValue : new()
 	{
-
 		if (dictionary.TryGetValue(key, out TValue? result) && result != null)
 		{
 			return result;
