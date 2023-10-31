@@ -339,7 +339,7 @@ public class DetaDrive
 		return responseData;
 	}
 
-	public async Task<DriveListResponse> ListAsync(DriveListOptions? options)
+	public async Task<DriveListResponse> ListAsync(DriveListOptions? options = null)
 	{
 		List<string> queryParameters = new List<string>();
 		if (options != null)
