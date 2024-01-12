@@ -19,7 +19,7 @@ public class InstanceTests
 			return;
 		}
 
-		Deta detaInstance = new Deta();
+		DetaInstance detaInstance = new DetaInstance();
 		Assert.NotNull(detaInstance);
 	}
 
@@ -33,12 +33,12 @@ public class InstanceTests
 		{
 			_ = Assert.Throws<InvalidOperationException>(() =>
 			{
-				Deta detaInstance = new Deta(projectKey);
+				DetaInstance detaInstance = new DetaInstance(projectKey);
 			});
 		}
 		else
 		{
-			Deta detaInstance = new Deta(projectKey);
+			DetaInstance detaInstance = new DetaInstance(projectKey);
 			Assert.NotNull(detaInstance);
 		}
 	}
@@ -47,7 +47,7 @@ public class InstanceTests
 	[Priority(3)]
 	public void BaseCreationTest()
 	{
-		Deta detaInstance = new Deta("test1_rndKey");
+		DetaInstance detaInstance = new DetaInstance("test1_rndKey");
 		DetaBase db = detaInstance.GetBase("test_base");
 		Assert.NotNull(db);
 	}
@@ -56,7 +56,7 @@ public class InstanceTests
 	[Priority(4)]
 	public void DriveCreationTest()
 	{
-		Deta detaInstance = new Deta("test1_rndKey");
+		DetaInstance detaInstance = new DetaInstance("test1_rndKey");
 		DetaDrive drv = detaInstance.GetDrive("test_drive");
 		Assert.NotNull(drv);
 	}

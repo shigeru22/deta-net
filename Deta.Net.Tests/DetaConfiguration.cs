@@ -16,7 +16,7 @@ internal class DetaConfiguration
 	private readonly static DetaConfiguration instance = new DetaConfiguration();
 	public static DetaConfiguration Instance => instance;
 
-	private readonly Deta detaInstance;
+	private readonly DetaInstance detaInstance;
 
 	private DetaBase? baseTestInstance;
 	private DetaBase? baseGenericTestInstance;
@@ -60,7 +60,7 @@ internal class DetaConfiguration
 			?? Environment.GetEnvironmentVariable("DETA_PROJECT_KEY")
 				?? throw new InvalidOperationException("Either 'apiKey' value in appsettings.json or DETA_PROJECT_KEY environment variable must be set for this test.");
 
-		detaInstance = new Deta(apiKey);
+		detaInstance = new DetaInstance(apiKey);
 
 		baseTestInstance = null;
 		baseGenericTestInstance = null;

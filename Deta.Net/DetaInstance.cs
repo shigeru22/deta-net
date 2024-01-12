@@ -6,7 +6,7 @@ using Deta.Net.Drive;
 
 namespace Deta.Net;
 
-public class Deta
+public class DetaInstance
 {
 	private readonly Dictionary<string, DetaBase> bases = new Dictionary<string, DetaBase>();
 	private readonly Dictionary<string, DetaDrive> drives = new Dictionary<string, DetaDrive>();
@@ -14,7 +14,7 @@ public class Deta
 	private readonly string apiKey;
 	private readonly string projectId;
 
-	public Deta()
+	public DetaInstance()
 	{
 		apiKey = Environment.GetEnvironmentVariable("DETA_PROJECT_KEY")
 			?? throw new InvalidOperationException("DETA_PROJECT_KEY environment variable not found. Add the variable or use Deta(string) instead.");
@@ -28,7 +28,7 @@ public class Deta
 		projectId = apiKey.Split('_')[0];
 	}
 
-	public Deta(string apiKey)
+	public DetaInstance(string apiKey)
 	{
 		this.apiKey = apiKey;
 		this.apiKey = this.apiKey.Trim();
