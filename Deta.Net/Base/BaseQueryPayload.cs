@@ -11,7 +11,7 @@ public class BaseQueryPayload
 	[JsonPropertyName("query")]
 	[JsonPropertyOrder(0)]
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-	public Dictionary<string, string>[]? Query { get; set; }
+	public Dictionary<string, object>[]? Query { get; set; }
 
 	[JsonPropertyName("limit")]
 	[JsonPropertyOrder(1)]
@@ -29,7 +29,7 @@ public class BaseQueryPayload
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public BaseQuerySort? Sort { get; set; }
 
-	public BaseQueryPayload(Dictionary<string, string>[]? query = null,
+	public BaseQueryPayload(Dictionary<string, object>[]? query = null,
 			int? limit = null,
 			string? last = null,
 			BaseQuerySort? sort = null)

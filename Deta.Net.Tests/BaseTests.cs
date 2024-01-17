@@ -50,11 +50,11 @@ public class BaseTests : IClassFixture<TestBaseFixture>
 	// 3.2 - query specific items
 	private readonly BaseQueryPayload tc3_2 = new BaseQueryPayload()
 	{
-		Query = new Dictionary<string, string>[]
+		Query = new Dictionary<string, object>[]
 		{
-			new Dictionary<string, string>(new KeyValuePair<string, string>[]
+			new Dictionary<string, object>(new KeyValuePair<string, object>[]
 			{
-				new KeyValuePair<string, string>("id?pfx", "B")
+				new KeyValuePair<string, object>("id?pfx", "B")
 			})
 		}
 	};
